@@ -40,9 +40,6 @@ class BreadOrderApp:
                            padding=5,
                            font=('Segoe UI', 10))
         
-        # Load saved quantities
-        self.quantities = self.load_quantities()
-        
         # Create main frame with padding and background
         main_frame = ttk.Frame(root, padding="20", style='Modern.TFrame')
         main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
@@ -72,9 +69,6 @@ class BreadOrderApp:
                             width=4,
                             style='Modern.TEntry')
             entry.grid(row=i, column=1, sticky=tk.W, pady=5, padx=(10, 0))
-            # Set the saved quantity if it exists
-            if item in self.quantities:
-                entry.insert(0, str(self.quantities[item]))
             self.entries[item] = entry
         
         # Send button with modern styling
@@ -94,20 +88,6 @@ class BreadOrderApp:
         self.status_label.grid(row=len(ORDER_ITEMS) + 2, 
                              column=0, 
                              columnspan=2)
-
-    def load_quantities(self):
-        try:
-            if os.path.exists('quantities.json'):
-                with open('quantities.json', 'r') as f:
-                    return json.load(f)
-        except Exception:
-            pass
-        return {}
-
-    def save_quantities(self):
-        quantities = {item: entry.get() for item, entry in self.entries.items()}
-        with open('quantities.json', 'w') as f:
-            json.dump(quantities, f)
 
     def send_order(self):
         # Validate email settings
@@ -142,9 +122,6 @@ class BreadOrderApp:
                 server.starttls()
                 server.login(SENDER_EMAIL, SENDER_PASSWORD)
                 server.send_message(msg)
-            
-            # Save quantities
-            self.save_quantities()
             
             # Show success message
             self.status_label.config(text="Order sent successfully!", foreground="green")
