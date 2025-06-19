@@ -127,6 +127,9 @@ class BreadOrderApp:
             self.status_label.config(text="Order sent successfully!", foreground="green")
             messagebox.showinfo("Success", "Order sent successfully!")
             
+            # Close the application after user clicks OK
+            self.root.quit()
+            
         except Exception as e:
             self.status_label.config(text=f"Error: {str(e)}", foreground="red")
             messagebox.showerror("Error", f"Failed to send order: {str(e)}")
